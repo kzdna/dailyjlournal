@@ -2,11 +2,37 @@
 session_start();
 
 include "koneksi.php";  
+// Ambil data user dari database
+$username = $_SESSION['username'];
+$query = mysqli_query($conn, "SELECT * FROM user WHERE username='$username'");
+$data = mysqli_fetch_assoc($query);
 
-//check jika belum ada user yang login arahkan ke halaman login
-if (!isset($_SESSION['username'])) { 
-	header("location:login.php"); 
-} 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Menghandle form
+    $password_baru = $_POST['password_baru'];
+    $foto = $_FILES['foto']['name'];
+    $foto_tmp = $_FILES['foto']['tmp_name'];
+    $foto_lama = $data['foto']; // Foto lama
+
+    // Jika user mengisi password baru
+    if (!empty($password_baru)) {
+        $password_enkripsi = md5($password_baru);
+        mysqli_query($conn, "UPDATE user SET password='$password_enkripsi' WHERE username='$username'");
+    }
+
+    // Jika user mengupload foto baru
+    if (!empty($foto)) {
+        $target_dir = "img/";
+        $target_file = $target_dir . basename($foto);
+        move_uploaded_file($foto_tmp, $target_file);
+
+        // Update nama foto di database
+        mysqli_query($conn, "UPDATE user SET foto='$foto' WHERE username='$username'");
+    }
+
+    header("location:profile.php");
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -86,24 +112,25 @@ if (!isset($_SESSION['username'])) {
     </div>
     </nav>
     <!-- nav end -->
-    <!-- content begin -->
-    <section id="content" class="p-5">
-        <div class="container">
-            <?php
-            if(isset($_GET['page'])){
-            ?>
-                <h4 class="lead display-6 pb-2 border-bottom border-danger-subtle"><?= ucfirst($_GET['page'])?></h4>
-                <?php
-                include($_GET['page'].".php");
-            }else{
-            ?>
-                <h4 class="lead display-6 pb-2 border-bottom border-danger-subtle">Dashboard</h4>
-                <?php
-                include("dashboard.php");
-            }
-            ?>
-        </div>
-    </section>
+    <!-- content begin --><div class="container mt-5">
+        <h4 class="lead display-6 pb-2 border-bottom border-danger-subtle">Profile</h4>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="password_baru" class="form-label">Ganti Password</label>
+                <input type="password" class="form-control" name="password_baru" placeholder="Masukkan password baru jika ingin mengubah">
+            </div>
+            <div class="mb-3">
+                <label for="foto" class="form-label">Ganti Foto Profil</label>
+                <input type="file" class="form-control" name="foto">
+            </div>
+            <div class="mb-3">
+                <label for="foto_lama" class="form-label">Foto Profil Saat Ini</label><br>
+                <img src="img/<?= $data['foto']; ?>" alt="Foto Profil" style="max-width: 150px;">
+            </div>
+            <button class="btn btn-primary" type="submit">Simpan</button>
+        </form>
+    </div>
+    <!-- Akhir Modal Tambah-->
     <!-- content end -->
     <!-- footer begin -->
     <footer class="text-center p-5 bg-danger-subtle">

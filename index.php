@@ -50,16 +50,10 @@ include "koneksi.php";
                         <a class="nav-link" href="#hero">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">Gallery</a>
+                        <a class="nav-link" href="#product">Gallery</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#product">Product</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#jadwal">Schedule</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#saya">About Me</a>
+                        <a class="nav-link" href="#article">Product</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="login.php" target="_blank">Login</a>
@@ -97,7 +91,7 @@ include "koneksi.php";
 <!-- article begin -->
 <section id="article" class="text-center p-5">
   <div class="container">
-    <h1 class="fw-bold display-4 pb-3">article</h1>
+    <h1 class="fw-bold display-4 pb-3">Article</h1>
     <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
       <?php
       $sql = "SELECT * FROM article ORDER BY tanggal DESC";
@@ -129,46 +123,40 @@ include "koneksi.php";
 </section>
 <!-- article end -->
 
-    <section id="product" class="text-center p-5 bg-danger-subtle">
-        <div class="container">
-            <h1 class="fw-bold display-4 pb-3">Gallery Section</h1>
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                </div>
-                <div class="carousel-inner">
+    <!-- gallery begin -->
+<section id="gallery" class="text-center p-5">
+  <div class="container">
+    <h1 class="fw-bold display-4 pb-3">Gallery</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+      <?php
+      $sql = "SELECT * FROM article ORDER BY tanggal DESC";
+      $hasil = $conn->query($sql); 
 
-                    <div class="carousel-item active">
-                        <img src="img/topi_1.jpeg" class="d-block w-100" alt="topi_1">
-                    </div>
-
-                    <div class="carousel-item">
-                        <img src="img/topi_2.jpeg" class="d-block w-100" alt="topi_2">
-                    </div>
-
-                    <div class="carousel-item">
-                        <img src="img/topi_3.jpeg" class="d-block w-100" alt="topi_3">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="img/topi_4.jpeg" class="d-block w-100" alt="topi_4">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="img/topi_5.jpeg" class="d-block w-100" alt="topi_5">
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+      while($row = $hasil->fetch_assoc()){
+      ?>
+        <div class="col">
+          <div class="card h-100">
+            <img src="img/<?= $row["gambar"]?>" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <h5 class="card-title"><?= $row["judul"]?></h5>
+              <p class="card-text">
+                <?= $row["tanggal"]?>
+              </p>
             </div>
+            <div class="card-footer">
+              <small class="text-body-secondary">
+                <?= $row["gambar"]?>
+              </small>
+            </div>
+          </div>
         </div>
-    </section>
+        <?php
+      }
+      ?> 
+    </div>
+  </div>
+</section>
+<!-- gallery end -->
 
     <!-- Footer -->
     <footer class="text-center p-5 bg-light">
